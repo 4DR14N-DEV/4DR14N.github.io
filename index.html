@@ -1,0 +1,1613 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Adrian Restrepo — Backend Developer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0a0a0a;
+        --bg2: #111111;
+        --bg3: #161616;
+        --border: rgba(255, 255, 255, 0.07);
+        --border2: rgba(255, 255, 255, 0.12);
+        --text: #f0f0ee;
+        --text2: #888884;
+        --text3: #555552;
+        --accent: #e8ff57;
+        --accent2: rgba(232, 255, 87, 0.08);
+        --accent3: rgba(232, 255, 87, 0.15);
+        --mono: "DM Mono", monospace;
+        --display: "Syne", sans-serif;
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--mono);
+        font-size: 15px;
+        line-height: 1.7;
+        overflow-x: hidden;
+      }
+
+      /* NOISE TEXTURE */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.4;
+      }
+
+      /* NAV */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.2rem 3rem;
+        border-bottom: 1px solid var(--border);
+        background: rgba(10, 10, 10, 0.85);
+        backdrop-filter: blur(12px);
+      }
+      .nav-logo {
+        font-family: var(--display);
+        font-weight: 700;
+        font-size: 1rem;
+        letter-spacing: -0.02em;
+        color: var(--text);
+        text-decoration: none;
+      }
+      .nav-logo span {
+        color: var(--accent);
+      }
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+        list-style: none;
+        align-items: center;
+      }
+      .nav-links a {
+        color: var(--text2);
+        text-decoration: none;
+        font-size: 0.78rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        transition: color 0.2s;
+      }
+      .nav-links a:hover {
+        color: var(--accent);
+      }
+      .lang-btn {
+        background: var(--accent2);
+        border: 1px solid rgba(232, 255, 87, 0.3);
+        color: var(--accent);
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        padding: 0.35rem 0.9rem;
+        border-radius: 2px;
+        cursor: pointer;
+        transition:
+          background 0.2s,
+          color 0.2s;
+      }
+      .lang-btn:hover {
+        background: var(--accent3);
+      }
+
+      /* SECTIONS */
+      section {
+        position: relative;
+        z-index: 1;
+      }
+
+      /* HERO */
+      #hero {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 8rem 3rem 4rem;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      .hero-label {
+        font-size: 0.72rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        opacity: 0;
+        animation: fadeUp 0.7s ease 0.1s forwards;
+      }
+      .hero-label::before {
+        content: "";
+        display: block;
+        width: 32px;
+        height: 1px;
+        background: var(--accent);
+      }
+      .hero-name {
+        font-family: var(--display);
+        font-weight: 800;
+        font-size: clamp(3rem, 8vw, 6.5rem);
+        line-height: 0.95;
+        letter-spacing: -0.03em;
+        color: var(--text);
+        opacity: 0;
+        animation: fadeUp 0.8s ease 0.25s forwards;
+      }
+      .hero-name .line2 {
+        color: var(--text3);
+      }
+      .hero-title {
+        margin-top: 2rem;
+        font-size: 0.88rem;
+        color: var(--text2);
+        letter-spacing: 0.04em;
+        opacity: 0;
+        animation: fadeUp 0.8s ease 0.45s forwards;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .hero-title .sep {
+        color: var(--text3);
+      }
+      .hero-title .highlight {
+        color: var(--accent);
+      }
+      .hero-desc {
+        margin-top: 2rem;
+        max-width: 540px;
+        color: var(--text2);
+        font-size: 0.9rem;
+        line-height: 1.9;
+        opacity: 0;
+        animation: fadeUp 0.8s ease 0.6s forwards;
+      }
+      .hero-ctas {
+        margin-top: 3rem;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        opacity: 0;
+        animation: fadeUp 0.8s ease 0.75s forwards;
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: #0a0a0a;
+        font-family: var(--mono);
+        font-size: 0.78rem;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 0.85rem 2rem;
+        border: none;
+        border-radius: 2px;
+        text-decoration: none;
+        cursor: pointer;
+        transition:
+          opacity 0.2s,
+          transform 0.15s;
+        display: inline-block;
+      }
+      .btn-primary:hover {
+        opacity: 0.88;
+        transform: translateY(-1px);
+      }
+      .btn-outline {
+        background: transparent;
+        color: var(--text2);
+        font-family: var(--mono);
+        font-size: 0.78rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 0.85rem 2rem;
+        border: 1px solid var(--border2);
+        border-radius: 2px;
+        text-decoration: none;
+        cursor: pointer;
+        transition:
+          border-color 0.2s,
+          color 0.2s,
+          transform 0.15s;
+        display: inline-block;
+      }
+      .btn-outline:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        transform: translateY(-1px);
+      }
+      .hero-scroll {
+        position: absolute;
+        bottom: 2.5rem;
+        left: 3rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.72rem;
+        color: var(--text3);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        opacity: 0;
+        animation: fadeUp 0.8s ease 1.2s forwards;
+      }
+      .scroll-line {
+        width: 40px;
+        height: 1px;
+        background: var(--text3);
+        animation: scrollLine 2s ease-in-out infinite;
+      }
+      @keyframes scrollLine {
+        0%,
+        100% {
+          transform: scaleX(1);
+          transform-origin: left;
+        }
+        50% {
+          transform: scaleX(0.4);
+          transform-origin: left;
+        }
+      }
+
+      /* SECTION BASE */
+      .section-wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 7rem 3rem;
+      }
+      .section-header {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin-bottom: 4rem;
+      }
+      .section-num {
+        font-size: 0.7rem;
+        color: var(--accent);
+        letter-spacing: 0.12em;
+      }
+      .section-title {
+        font-family: var(--display);
+        font-weight: 700;
+        font-size: clamp(1.8rem, 4vw, 2.5rem);
+        letter-spacing: -0.03em;
+        color: var(--text);
+      }
+      .section-line {
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+
+      /* ABOUT */
+      #about {
+        background: var(--bg2);
+      }
+      .about-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.4fr;
+        gap: 5rem;
+        align-items: start;
+      }
+      .about-photo-wrap {
+        position: relative;
+      }
+      .about-photo {
+        width: 100%;
+        aspect-ratio: 3/4;
+        object-fit: cover;
+        object-position: top center;
+        filter: grayscale(20%) contrast(1.05);
+        border-radius: 2px;
+        display: block;
+      }
+      .about-photo-placeholder {
+        width: 100%;
+        aspect-ratio: 3/4;
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: 2px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        color: var(--text3);
+        font-size: 0.78rem;
+        letter-spacing: 0.06em;
+      }
+      .photo-badge {
+        position: absolute;
+        bottom: -1rem;
+        right: -1rem;
+        background: var(--accent);
+        color: #0a0a0a;
+        font-size: 0.7rem;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        padding: 0.6rem 1rem;
+        border-radius: 2px;
+      }
+      .about-text p {
+        color: var(--text2);
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+        line-height: 1.9;
+      }
+      .about-text p strong {
+        color: var(--text);
+        font-weight: 500;
+      }
+      .about-links {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+      }
+      .about-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text2);
+        text-decoration: none;
+        font-size: 0.78rem;
+        letter-spacing: 0.04em;
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--border);
+        border-radius: 2px;
+        transition:
+          border-color 0.2s,
+          color 0.2s;
+      }
+      .about-link:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .about-link .link-icon {
+        font-size: 12px;
+      }
+
+      /* SKILLS */
+      .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1px;
+        background: var(--border);
+        border: 1px solid var(--border);
+      }
+      .skill-card {
+        background: var(--bg);
+        padding: 2rem;
+        transition: background 0.2s;
+      }
+      .skill-card:hover {
+        background: var(--bg3);
+      }
+      .skill-category {
+        font-size: 0.68rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 1rem;
+      }
+      .skill-name {
+        font-family: var(--display);
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: var(--text);
+        margin-bottom: 0.5rem;
+      }
+      .skill-desc {
+        font-size: 0.8rem;
+        color: var(--text3);
+        line-height: 1.7;
+      }
+      .skill-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin-top: 1rem;
+      }
+      .tag {
+        font-size: 0.68rem;
+        letter-spacing: 0.04em;
+        color: var(--text3);
+        border: 1px solid var(--border);
+        padding: 0.2rem 0.6rem;
+        border-radius: 2px;
+      }
+
+      /* PROJECTS */
+      #projects {
+        background: var(--bg2);
+      }
+      .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+        gap: 1.5rem;
+      }
+      .project-card {
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: 2px;
+        overflow: hidden;
+        transition:
+          border-color 0.25s,
+          transform 0.25s;
+      }
+      .project-card:hover {
+        border-color: var(--border2);
+        transform: translateY(-3px);
+      }
+      .project-card.featured {
+        border-color: rgba(232, 255, 87, 0.2);
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+      .project-card.featured:hover {
+        border-color: rgba(232, 255, 87, 0.4);
+      }
+      .project-meta {
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 1.5rem;
+      }
+      .project-card.featured .project-meta {
+        padding: 2.5rem;
+      }
+      .project-header {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .project-type {
+        font-size: 0.68rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+      .project-name {
+        font-family: var(--display);
+        font-weight: 700;
+        font-size: 1.35rem;
+        letter-spacing: -0.02em;
+        color: var(--text);
+        line-height: 1.2;
+      }
+      .project-desc {
+        font-size: 0.82rem;
+        color: var(--text2);
+        line-height: 1.8;
+      }
+      .project-stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+      }
+      .project-links {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+      }
+      .project-link {
+        font-size: 0.75rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--text2);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        transition: color 0.2s;
+      }
+      .project-link:hover {
+        color: var(--accent);
+      }
+      .project-link.primary {
+        color: var(--accent);
+      }
+      .project-visual {
+        background: var(--bg);
+        border-left: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        min-height: 260px;
+      }
+      .api-diagram {
+        width: 100%;
+        max-width: 280px;
+        font-size: 0.72rem;
+      }
+      .api-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.4rem 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .api-row:last-child {
+        border-bottom: none;
+      }
+      .method {
+        font-size: 0.62rem;
+        font-weight: 500;
+        padding: 0.15rem 0.45rem;
+        border-radius: 2px;
+        min-width: 38px;
+        text-align: center;
+      }
+      .get {
+        background: rgba(29, 158, 117, 0.12);
+        color: #3ecfa0;
+      }
+      .post {
+        background: rgba(232, 255, 87, 0.1);
+        color: var(--accent);
+      }
+      .put {
+        background: rgba(239, 159, 39, 0.12);
+        color: #f0a040;
+      }
+      .del {
+        background: rgba(226, 75, 74, 0.12);
+        color: #e87070;
+      }
+      .endpoint {
+        color: var(--text3);
+        font-size: 0.68rem;
+      }
+
+      /* CERTS */
+      .certs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 1px;
+        background: var(--border);
+        border: 1px solid var(--border);
+      }
+      .cert-card {
+        background: var(--bg);
+        padding: 1.5rem;
+        transition: background 0.2s;
+      }
+      .cert-card:hover {
+        background: var(--bg3);
+      }
+      .cert-year {
+        font-size: 0.65rem;
+        letter-spacing: 0.12em;
+        color: var(--text3);
+        margin-bottom: 0.5rem;
+      }
+      .cert-name {
+        font-size: 0.82rem;
+        font-weight: 500;
+        color: var(--text);
+        margin-bottom: 0.3rem;
+        line-height: 1.4;
+      }
+      .cert-issuer {
+        font-size: 0.72rem;
+        color: var(--text3);
+      }
+      .cert-card.featured-cert {
+        border-bottom: 1px solid rgba(232, 255, 87, 0.2);
+      }
+      .cert-card.featured-cert .cert-name {
+        color: var(--accent);
+      }
+
+      /* CONTACT */
+      #contact {
+        background: var(--bg2);
+      }
+      .contact-wrap {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5rem;
+        align-items: center;
+      }
+      .contact-heading {
+        font-family: var(--display);
+        font-weight: 800;
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        letter-spacing: -0.03em;
+        line-height: 1;
+        color: var(--text);
+        margin-bottom: 1.5rem;
+      }
+      .contact-heading span {
+        color: var(--accent);
+      }
+      .contact-sub {
+        color: var(--text2);
+        font-size: 0.88rem;
+        line-height: 1.9;
+        margin-bottom: 2.5rem;
+      }
+      .contact-links {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        background: var(--border);
+        border: 1px solid var(--border);
+      }
+      .contact-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.2rem 1.5rem;
+        background: var(--bg3);
+        text-decoration: none;
+        transition: background 0.2s;
+      }
+      .contact-item:hover {
+        background: var(--bg);
+      }
+      .contact-item-left {
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+      }
+      .contact-platform {
+        font-size: 0.65rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text3);
+      }
+      .contact-value {
+        font-size: 0.85rem;
+        color: var(--text);
+      }
+      .contact-arrow {
+        color: var(--text3);
+        font-size: 0.9rem;
+        transition:
+          color 0.2s,
+          transform 0.2s;
+      }
+      .contact-item:hover .contact-arrow {
+        color: var(--accent);
+        transform: translate(2px, -2px);
+      }
+
+      /* FOOTER */
+      footer {
+        position: relative;
+        z-index: 1;
+        border-top: 1px solid var(--border);
+        padding: 2rem 3rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1100px;
+        margin: 0 auto;
+        font-size: 0.72rem;
+        color: var(--text3);
+        letter-spacing: 0.04em;
+      }
+
+      /* ANIMATIONS */
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(24px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition:
+          opacity 0.7s ease,
+          transform 0.7s ease;
+      }
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* MOBILE */
+      @media (max-width: 768px) {
+        nav {
+          padding: 1rem 1.5rem;
+        }
+        .nav-links {
+          display: none;
+        }
+        #hero {
+          padding: 7rem 1.5rem 4rem;
+        }
+        .section-wrap {
+          padding: 5rem 1.5rem;
+        }
+        .about-grid {
+          grid-template-columns: 1fr;
+          gap: 3rem;
+        }
+        .about-photo-wrap {
+          max-width: 280px;
+        }
+        .projects-grid {
+          grid-template-columns: 1fr;
+        }
+        .project-card.featured {
+          grid-template-columns: 1fr;
+        }
+        .project-visual {
+          display: none;
+        }
+        .contact-wrap {
+          grid-template-columns: 1fr;
+          gap: 3rem;
+        }
+        footer {
+          flex-direction: column;
+          gap: 0.5rem;
+          text-align: center;
+          padding: 2rem 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="#hero" class="nav-logo">4DR14N-DEV<span>.</span></a>
+      <ul class="nav-links">
+        <li><a href="#about" data-i18n="nav.about">Sobre mí</a></li>
+        <li><a href="#skills" data-i18n="nav.skills">Habilidades</a></li>
+        <li><a href="#projects" data-i18n="nav.projects">Proyectos</a></li>
+        <li><a href="#certs" data-i18n="nav.certs">Certificaciones</a></li>
+        <li><a href="#contact" data-i18n="nav.contact">Contacto</a></li>
+        <li><button class="lang-btn" id="langToggle">EN</button></li>
+      </ul>
+      <button class="lang-btn" id="langToggleMobile" style="display: none">
+        EN
+      </button>
+    </nav>
+
+    <!-- HERO -->
+    <section id="hero">
+      <h1 class="hero-name">
+        Adrian<br />
+        <span class="line2">Restrepo</span>
+      </h1>
+      <p class="hero-title">
+        <span data-i18n="hero.role">Backend Developer</span>
+        <span class="sep">/</span>
+        <span class="highlight" data-i18n="hero.ai">AI-Driven Development</span>
+        <span class="sep">/</span>
+        <span>Node.js · Express · MySQL</span>
+      </p>
+      <p class="hero-desc" data-i18n="hero.desc">
+        Desarrollador backend enfocado en APIs robustas e integración de IA en
+        el flujo de desarrollo mediante metodología SDD. De Medellín, Colombia.
+      </p>
+      <div class="hero-ctas">
+        <a href="#projects" class="btn-primary" data-i18n="hero.cta1"
+          >Ver proyectos</a
+        >
+        <a href="#contact" class="btn-outline" data-i18n="hero.cta2"
+          >Contactar</a
+        >
+      </div>
+      <div class="hero-scroll">
+        <div class="scroll-line"></div>
+        <span data-i18n="hero.scroll">scroll</span>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about">
+      <div class="section-wrap">
+        <div class="section-header reveal">
+          <span class="section-num">01</span>
+          <h2 class="section-title" data-i18n="about.title">Sobre mí</h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="about-grid">
+          <div class="about-photo-wrap reveal">
+            <div class="about-photo-placeholder" id="photoPlaceholder">
+              <img
+                src="assets/img/Adrian_Restrepo.jpeg"
+                alt="Adrian Restrepo"
+                class="about-photo"
+              />
+            </div>
+            <div class="photo-badge" data-i18n="about.badge">Medellín, CO</div>
+          </div>
+          <div class="about-text reveal">
+            <p data-i18n="about.p1">
+              Soy estudiante de <strong>Programación de Software</strong> con
+              enfoque principal en el desarrollo backend. Con bases sólidas en
+              lógica de programación y resolución de problemas mediante
+              algoritmos.
+            </p>
+            <p data-i18n="about.p2">
+              Con experiencia práctica en el desarrollo de
+              <strong>APIs REST y operaciones CRUD</strong> utilizando Node.js y
+              Express.js, dominando la arquitectura de modelos, servicios y
+              enrutadores.
+            </p>
+            <p data-i18n="about.p3">
+              Mi diferencial es la integración de
+              <strong>Inteligencia Artificial en el flujo de desarrollo</strong>
+              mediante la metodología SDD — Delegación y osquestación de agentes
+              y subagentes.
+            </p>
+            <div class="about-links">
+              <a
+                href="https://github.com/4DR14N-DEV"
+                target="_blank"
+                class="about-link"
+              >
+                <span class="link-icon">⌥</span> GitHub
+              </a>
+              <a
+                href="https://www.linkedin.com/in/adrian-yesid-restrepo"
+                target="_blank"
+                class="about-link"
+              >
+                <span class="link-icon">◈</span> LinkedIn
+              </a>
+              <a href="mailto:adrianrpo23@gmail.com" class="about-link">
+                <span class="link-icon">◎</span> Email
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills">
+      <div class="section-wrap">
+        <div class="section-header reveal">
+          <span class="section-num">02</span>
+          <h2 class="section-title" data-i18n="skills.title">Habilidades</h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="skills-grid reveal">
+          <div class="skill-card">
+            <div class="skill-category" data-i18n="skills.cat.backend">
+              Backend
+            </div>
+            <div class="skill-name">Node.js + Express</div>
+            <div class="skill-desc" data-i18n="skills.node">
+              APIs REST, arquitectura MVC, middlewares, autenticación por roles,
+              bcrypt, CORS.
+            </div>
+            <div class="skill-tags">
+              <span class="tag">Node.js</span><span class="tag">Express.js</span
+              ><span class="tag">REST API</span><span class="tag">Bcrypt</span>
+            </div>
+          </div>
+          <div class="skill-card">
+            <div class="skill-category" data-i18n="skills.cat.db">
+              Base de datos
+            </div>
+            <div class="skill-name">MySQL + MongoDB + PostgreSQL</div>
+            <div class="skill-desc" data-i18n="skills.db">
+              Diseño de schemas, consultas SQL, pool de conexiones con mysql2,
+              fundamentos NoSQL.
+            </div>
+            <div class="skill-tags">
+              <span class="tag">MySQL</span><span class="tag">MongoDB</span
+              ><span class="tag">mysql2</span><span class="tag">PostgreSQL</span
+              ><span class="tag">SQL</span>
+            </div>
+          </div>
+          <div class="skill-card">
+            <div class="skill-category" data-i18n="skills.cat.frontend">
+              Frontend
+            </div>
+            <div class="skill-name">HTML + CSS + JavaScript + React</div>
+            <div class="skill-desc" data-i18n="skills.frontend">
+              JavaScript ES Modules, Fetch API, manipulación del DOM,
+              fundamentos de React.js.
+            </div>
+            <div class="skill-tags">
+              <span class="tag">JavaScript</span><span class="tag">HTML5</span
+              ><span class="tag">CSS3</span><span class="tag">React.js</span>
+            </div>
+          </div>
+          <div class="skill-card">
+            <div class="skill-category" data-i18n="skills.cat.tools">
+              Herramientas
+            </div>
+            <div class="skill-name">Git + Testing</div>
+            <div class="skill-desc" data-i18n="skills.tools">
+              Control de versiones con Git/GitHub, pruebas unitarias con Jest,
+              documentación con Swagger.
+            </div>
+            <div class="skill-tags">
+              <span class="tag">Git</span><span class="tag">GitHub</span
+              ><span class="tag">Jest</span><span class="tag">Swagger</span>
+            </div>
+          </div>
+          <div
+            class="skill-card"
+            style="border-left: 2px solid rgba(232, 255, 87, 0.3)"
+          >
+            <div class="skill-category" style="color: var(--accent)">
+              AI · SDD
+            </div>
+            <div class="skill-name">Inteligencia Artificial</div>
+            <div class="skill-desc" data-i18n="skills.ai">
+              Metodología SDD, Prompt Engineering, Claude Code, Gemini, agentes
+              y subagentes, Skills, MCPs.
+            </div>
+            <div class="skill-tags">
+              <span
+                class="tag"
+                style="
+                  border-color: rgba(232, 255, 87, 0.2);
+                  color: var(--accent);
+                "
+                >Claude Code</span
+              >
+              <span
+                class="tag"
+                style="
+                  border-color: rgba(232, 255, 87, 0.2);
+                  color: var(--accent);
+                "
+                >OpenCode</span
+              >
+              <span
+                class="tag"
+                style="
+                  border-color: rgba(232, 255, 87, 0.2);
+                  color: var(--accent);
+                "
+                >Open Claw</span
+              >
+              <span
+                class="tag"
+                style="
+                  border-color: rgba(232, 255, 87, 0.2);
+                  color: var(--accent);
+                "
+                >Gemini CLI</span
+              >
+              <span
+                class="tag"
+                style="
+                  border-color: rgba(232, 255, 87, 0.2);
+                  color: var(--accent);
+                "
+                >ChatGPT</span
+              >
+              <span
+                class="tag"
+                style="
+                  border-color: rgba(232, 255, 87, 0.2);
+                  color: var(--accent);
+                "
+                >MCPs</span
+              >
+              <span
+                class="tag"
+                style="
+                  border-color: rgba(232, 255, 87, 0.2);
+                  color: var(--accent);
+                "
+                >Skills</span
+              >
+              <span
+                class="tag"
+                style="
+                  border-color: rgba(232, 255, 87, 0.2);
+                  color: var(--accent);
+                "
+                >OpenSpec</span
+              >
+            </div>
+          </div>
+          <div class="skill-card">
+            <div class="skill-category" data-i18n="skills.cat.algo">
+              Fundamentos
+            </div>
+            <div class="skill-name">Algoritmos + DSA</div>
+            <div class="skill-desc" data-i18n="skills.algo">
+              Estructuras de datos, algoritmos certificados por FreeCodeCamp
+              (JavaScript V9).
+            </div>
+            <div class="skill-tags">
+              <span class="tag">Algoritmos</span
+              ><span class="tag">Estructuras de datos</span
+              ><span class="tag">OOP</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects">
+      <div class="section-wrap">
+        <div class="section-header reveal">
+          <span class="section-num">03</span>
+          <h2 class="section-title" data-i18n="projects.title">Proyectos</h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="projects-grid">
+          <!-- FEATURED: Full Stack -->
+          <div class="project-card featured reveal">
+            <div class="project-meta">
+              <div class="project-header">
+                <span class="project-type"
+                  >Full Stack ·
+                  <span data-i18n="proj.featured"
+                    >Proyecto destacado</span
+                  ></span
+                >
+                <h3 class="project-name">Parking Lot<br />Management System</h3>
+                <p class="project-desc" data-i18n="proj.fullstack.desc">
+                  Sistema completo de gestión de parqueaderos con arquitectura
+                  Full-Stack. Autenticación por roles (Admin, Operario, Usuario)
+                  +30 Enpoints, 10 vistas completas, sistema de reportes con
+                  exportación a PDF, control de accesos y pico y placa.
+                </p>
+              </div>
+              <div>
+                <div class="project-stack">
+                  <span class="tag">Node.js</span
+                  ><span class="tag">Express.js</span
+                  ><span class="tag">MySQL</span> <span class="tag">HTML5</span
+                  ><span class="tag">CSS3</span><span class="tag">JS ES6</span>
+                  <span class="tag">Jest</span><span class="tag">Swagger</span
+                  ><span class="tag">bcrypt</span>
+                </div>
+                <div class="project-links" style="margin-top: 1.5rem">
+                  <a
+                    href="https://github.com/4DR14N-DEV/Parkin_lot_project"
+                    target="_blank"
+                    class="project-link primary"
+                  >
+                    ↗ <span data-i18n="proj.repo">Ver repositorio</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="project-visual">
+              <div class="api-diagram">
+                <div
+                  style="
+                    font-size: 0.65rem;
+                    letter-spacing: 0.1em;
+                    color: var(--text3);
+                    text-transform: uppercase;
+                    margin-bottom: 1rem;
+                  "
+                >
+                  API Endpoints
+                </div>
+                <div class="api-row">
+                  <span class="method post">POST</span
+                  ><span class="endpoint">/api/usuarios/login</span>
+                </div>
+                <div class="api-row">
+                  <span class="method get">GET</span
+                  ><span class="endpoint">/api/vehiculos</span>
+                </div>
+                <div class="api-row">
+                  <span class="method post">POST</span
+                  ><span class="endpoint">/api/accesos-salidas</span>
+                </div>
+                <div class="api-row">
+                  <span class="method get">GET</span
+                  ><span class="endpoint">/api/celdas</span>
+                </div>
+                <div class="api-row">
+                  <span class="method put">PUT</span
+                  ><span class="endpoint">/api/incidencias/:id</span>
+                </div>
+                <div class="api-row">
+                  <span class="method del">DEL</span
+                  ><span class="endpoint">/api/pico-y-placa/:id</span>
+                </div>
+                <div class="api-row">
+                  <span class="method get">GET</span
+                  ><span class="endpoint">/api/reporte-incidencias</span>
+                </div>
+                <div
+                  style="
+                    margin-top: 1rem;
+                    padding-top: 1rem;
+                    border-top: 1px solid var(--border);
+                    font-size: 0.65rem;
+                    color: var(--text3);
+                  "
+                >
+                  + Swagger docs at /api-docs
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Backend API -->
+          <div class="project-card reveal">
+            <div class="project-meta">
+              <div class="project-header">
+                <span class="project-type">Backend · API REST</span>
+                <h3 class="project-name">Backend Parking API</h3>
+                <p class="project-desc" data-i18n="proj.backend.desc">
+                  API REST para la gestión integral de un sistema de
+                  parqueadero. Endpoints para administración de usuarios,
+                  vehículos, celdas, control de accesos, incidencias y reportes.
+                </p>
+              </div>
+              <div>
+                <div class="project-stack">
+                  <span class="tag">Node.js</span
+                  ><span class="tag">Express.js</span>
+                  <span class="tag">MySQL</span><span class="tag">Jest</span
+                  ><span class="tag">Swagger</span>
+                </div>
+                <div class="project-links" style="margin-top: 1.5rem">
+                  <a
+                    href="https://github.com/4DR14N-DEV/backend-parking-project"
+                    target="_blank"
+                    class="project-link primary"
+                  >
+                    ↗ <span data-i18n="proj.repo">Ver repositorio</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="project-visual">
+              <div class="api-diagram">
+                <div
+                  style="
+                    font-size: 0.65rem;
+                    letter-spacing: 0.1em;
+                    color: var(--text3);
+                    text-transform: uppercase;
+                    margin-bottom: 1rem;
+                  "
+                >
+                  API Endpoints
+                </div>
+                <div class="api-row">
+                  <span class="method post">POST</span
+                  ><span class="endpoint">/api/usuarios/login</span>
+                </div>
+                <div class="api-row">
+                  <span class="method get">GET</span
+                  ><span class="endpoint">/api/vehiculos</span>
+                </div>
+                <div class="api-row">
+                  <span class="method post">POST</span
+                  ><span class="endpoint">/api/accesos-salidas</span>
+                </div>
+                <div class="api-row">
+                  <span class="method get">GET</span
+                  ><span class="endpoint">/api/celdas</span>
+                </div>
+                <div class="api-row">
+                  <span class="method put">PUT</span
+                  ><span class="endpoint">/api/incidencias/:id</span>
+                </div>
+                <div class="api-row">
+                  <span class="method del">DEL</span
+                  ><span class="endpoint">/api/pico-y-placa/:id</span>
+                </div>
+                <div class="api-row">
+                  <span class="method get">GET</span
+                  ><span class="endpoint">/api/reporte-incidencias</span>
+                </div>
+                <div
+                  style="
+                    margin-top: 1rem;
+                    padding-top: 1rem;
+                    border-top: 1px solid var(--border);
+                    font-size: 0.65rem;
+                    color: var(--text3);
+                  "
+                >
+                  + Swagger docs at /api-docs
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- WIP card -->
+          <div
+            class="project-card reveal"
+            style="border-style: dashed; border-color: var(--border2)"
+          >
+            <div
+              class="project-meta"
+              style="
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                min-height: 200px;
+              "
+            >
+              <div>
+                <div class="project-type" data-i18n="proj.wip">
+                  Próximamente
+                </div>
+                <div
+                  class="project-name"
+                  style="font-size: 1rem; color: var(--text3)"
+                  data-i18n="proj.wip2"
+                >
+                  Más proyectos en desarrollo
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CERTS -->
+    <section id="certs">
+      <div class="section-wrap">
+        <div class="section-header reveal">
+          <span class="section-num">04</span>
+          <h2 class="section-title" data-i18n="certs.title">Certificaciones</h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="certs-grid reveal">
+          <div class="cert-card featured-cert">
+            <div class="cert-year">2026</div>
+            <div class="cert-name">
+              JavaScript V9 — Algorithms & Data Structures
+            </div>
+            <div class="cert-issuer">FreeCodeCamp</div>
+          </div>
+          <div class="cert-card featured-cert">
+            <div class="cert-year">2025</div>
+            <div class="cert-name">Claude Code in Action</div>
+            <div class="cert-issuer">Anthropic</div>
+          </div>
+          <div class="cert-card featured-cert">
+            <div class="cert-year">2026</div>
+            <div class="cert-name">Iniciación al Desarrollo con IA</div>
+            <div class="cert-issuer">Big School</div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-year">2025</div>
+            <div class="cert-name">Prompt Engineering</div>
+            <div class="cert-issuer">Platzi</div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-year">2025</div>
+            <div class="cert-name">Herramientas de IA para Developers</div>
+            <div class="cert-issuer">Platzi</div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-year">2025</div>
+            <div class="cert-name">Domina la IA con Gemini</div>
+            <div class="cert-issuer">Santander Open Academy</div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-year">2025</div>
+            <div class="cert-name">React.js</div>
+            <div class="cert-issuer">Platzi</div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-year">2025</div>
+            <div class="cert-name">Fundamentos de Node.js</div>
+            <div class="cert-issuer">Platzi</div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-year">2025</div>
+            <div class="cert-name">Introducción a MongoDB</div>
+            <div class="cert-issuer">Platzi</div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-year">2025</div>
+            <div class="cert-name">Fundamentos de JavaScript</div>
+            <div class="cert-issuer">Platzi</div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-year">2025</div>
+            <div class="cert-name">Git y GitHub</div>
+            <div class="cert-issuer">Platzi</div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-year">2025</div>
+            <div class="cert-name">
+              Tips y Trucos IA · Fundamentos ChatGPT · HTML · CSS
+            </div>
+            <div class="cert-issuer">Platzi</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact">
+      <div class="section-wrap">
+        <div class="section-header reveal">
+          <span class="section-num">05</span>
+          <h2 class="section-title" data-i18n="contact.title">Contacto</h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="contact-wrap">
+          <div class="reveal">
+            <h3 class="contact-heading">
+              <span data-i18n="contact.heading1">Hablemos</span><br /><span
+                data-i18n="contact.heading2"
+                >de tu proyecto</span
+              ><span style="color: var(--accent)">.</span>
+            </h3>
+            <p class="contact-sub" data-i18n="contact.sub">
+              Estoy disponible para posiciones junior backend, proyectos
+              freelance o colaboraciones. No dudes en escribirme.
+            </p>
+            <a
+              href="mailto:adrianrpo23@gmail.com"
+              class="btn-primary"
+              data-i18n="contact.btn"
+              >Enviar mensaje</a
+            >
+          </div>
+          <div class="reveal">
+            <div class="contact-links">
+              <a href="mailto:adrianrpo23@gmail.com" class="contact-item">
+                <div class="contact-item-left">
+                  <span class="contact-platform">Email</span>
+                  <span class="contact-value">adrianrpo23@gmail.com</span>
+                </div>
+                <span class="contact-arrow">↗</span>
+              </a>
+              <a
+                href="https://github.com/4DR14N-DEV"
+                target="_blank"
+                class="contact-item"
+              >
+                <div class="contact-item-left">
+                  <span class="contact-platform">GitHub</span>
+                  <span class="contact-value">@4DR14N-DEV</span>
+                </div>
+                <span class="contact-arrow">↗</span>
+              </a>
+              <a
+                href="https://www.linkedin.com/in/adrian-yesid-restrepo"
+                target="_blank"
+                class="contact-item"
+              >
+                <div class="contact-item-left">
+                  <span class="contact-platform">LinkedIn</span>
+                  <span class="contact-value">Adrian Yesid Restrepo</span>
+                </div>
+                <span class="contact-arrow">↗</span>
+              </a>
+              <a
+                href="https://wa.me/573503650525"
+                target="_blank"
+                class="contact-item"
+              >
+                <div class="contact-item-left">
+                  <span class="contact-platform">WhatsApp</span>
+                  <span class="contact-value">+57 350 365 0525</span>
+                </div>
+                <span class="contact-arrow">↗</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>© 2026 Adrian Yesid Restrepo Lopez</span>
+      <span style="color: var(--text3)">Backend Developer · AI Augmented</span>
+    </footer>
+
+    <script>
+      const i18n = {
+        es: {
+          "nav.about": "Sobre mí",
+          "nav.skills": "Habilidades",
+          "nav.projects": "Proyectos",
+          "nav.certs": "Certificaciones",
+          "nav.contact": "Contacto",
+          "hero.label": "Disponible para trabajar",
+          "hero.role": "Backend Developer",
+          "hero.ai": "AI-Driven Development",
+          "hero.desc":
+            "Desarrollador backend enfocado en APIs robustas e integración de IA en el flujo de desarrollo mediante metodología SDD. Con base en Medellín, Colombia.",
+          "hero.cta1": "Ver proyectos",
+          "hero.cta2": "Contactar",
+          "hero.scroll": "scroll",
+          "about.title": "Sobre mí",
+          "about.photo": "Foto de perfil",
+          "about.badge": "Medellín, CO",
+          "about.p1":
+            "Soy estudiante de <strong>Programación de Software</strong> con enfoque principal en el desarrollo backend. Poseo bases sólidas en lógica de programación y resolución de problemas mediante algoritmos.",
+          "about.p2":
+            "Cuento con experiencia práctica en el desarrollo de <strong>APIs REST y operaciones CRUD</strong> utilizando Node.js y Express.js, dominando la arquitectura de modelos, servicios y enrutadores.",
+          "about.p3":
+            "Mi diferencial es la integración de <strong>Inteligencia Artificial en el flujo de desarrollo</strong> mediante la metodología SDD — con certificaciones en Prompt Engineering, Claude Code, Gemini AI y manejo de agentes y subagentes.",
+          "skills.title": "Habilidades",
+          "skills.cat.backend": "Backend",
+          "skills.cat.db": "Base de datos",
+          "skills.cat.frontend": "Frontend",
+          "skills.cat.tools": "Herramientas",
+          "skills.cat.algo": "Fundamentos",
+          "skills.node":
+            "APIs REST, arquitectura MVC, middlewares, autenticación por roles, bcrypt, CORS.",
+          "skills.db":
+            "Diseño de schemas, consultas SQL, pool de conexiones con mysql2, fundamentos NoSQL.",
+          "skills.frontend":
+            "JavaScript ES Modules, Fetch API, manipulación del DOM, fundamentos de React.js.",
+          "skills.tools":
+            "Control de versiones con Git/GitHub, pruebas unitarias con Jest, documentación con Swagger.",
+          "skills.ai":
+            "Metodología SDD, Prompt Engineering, Claude Code, Gemini, agentes y subagentes, MCPs.",
+          "skills.algo":
+            "Estructuras de datos, algoritmos certificados por FreeCodeCamp (JavaScript V9).",
+          "projects.title": "Proyectos",
+          "proj.featured": "Proyecto destacado",
+          "proj.fullstack.desc":
+            "Sistema completo de gestión de parqueaderos con arquitectura Full-Stack. Autenticación por roles (Admin, Operario, Usuario), 10 vistas completas, sistema de reportes con exportación a PDF, control de accesos y pico y placa.",
+          "proj.backend.desc":
+            "API REST para la gestión integral de un sistema de parqueadero. Endpoints para administración de usuarios, vehículos, celdas, control de accesos, incidencias y reportes.",
+          "proj.repo": "Ver repositorio",
+          "proj.wip": "Próximamente",
+          "proj.wip2": "Más proyectos en desarrollo",
+          "certs.title": "Certificaciones",
+          "contact.title": "Contacto",
+          "contact.heading1": "Hablemos",
+          "contact.heading2": "de tu proyecto",
+          "contact.sub":
+            "Estoy disponible para posiciones junior backend, proyectos freelance o colaboraciones. No dudes en escribirme.",
+          "contact.btn": "Enviar mensaje",
+        },
+        en: {
+          "nav.about": "About",
+          "nav.skills": "Skills",
+          "nav.projects": "Projects",
+          "nav.certs": "Certifications",
+          "nav.contact": "Contact",
+          "hero.label": "Open to work",
+          "hero.role": "Backend Developer",
+          "hero.ai": "AI-Driven Development",
+          "hero.desc":
+            "Backend developer focused on robust APIs and integrating AI into the development workflow through the SDD methodology. Based in Medellín, Colombia.",
+          "hero.cta1": "View projects",
+          "hero.cta2": "Get in touch",
+          "hero.scroll": "scroll",
+          "about.title": "About me",
+          "about.photo": "Profile photo",
+          "about.badge": "Medellín, CO",
+          "about.p1":
+            "I'm a <strong>Software Programming</strong> student with a primary focus on backend development. I have solid foundations in programming logic and problem-solving through algorithms.",
+          "about.p2":
+            "I have hands-on experience building <strong>REST APIs and CRUD operations</strong> using Node.js and Express.js, mastering the models, services, and router architecture.",
+          "about.p3":
+            "My differentiator is integrating <strong>Artificial Intelligence into the development workflow</strong> through the SDD methodology — with certifications in Prompt Engineering, Claude Code, Gemini AI, and agent/subagent management.",
+          "skills.title": "Skills",
+          "skills.cat.backend": "Backend",
+          "skills.cat.db": "Database",
+          "skills.cat.frontend": "Frontend",
+          "skills.cat.tools": "Tools",
+          "skills.cat.algo": "Fundamentals",
+          "skills.node":
+            "REST APIs, MVC architecture, middlewares, role-based auth, bcrypt, CORS.",
+          "skills.db":
+            "Schema design, SQL queries, connection pooling with mysql2, NoSQL fundamentals.",
+          "skills.frontend":
+            "JavaScript ES Modules, Fetch API, DOM manipulation, React.js fundamentals.",
+          "skills.tools":
+            "Version control with Git/GitHub, unit testing with Jest, documentation with Swagger.",
+          "skills.ai":
+            "SDD methodology, Prompt Engineering, Claude Code, Gemini, agents & subagents, MCPs.",
+          "skills.algo":
+            "Data structures and algorithms certified by FreeCodeCamp (JavaScript V9).",
+          "projects.title": "Projects",
+          "proj.featured": "Featured project",
+          "proj.fullstack.desc":
+            "Full-Stack parking lot management system. Role-based auth (Admin, Operator, User), 10 complete views, PDF report export, access control, and peak-hour restrictions.",
+          "proj.backend.desc":
+            "REST API for comprehensive parking lot management. Endpoints for users, vehicles, parking cells, access control, incidents, and reports.",
+          "proj.repo": "View repository",
+          "proj.wip": "Coming soon",
+          "proj.wip2": "More projects in development",
+          "certs.title": "Certifications",
+          "contact.title": "Contact",
+          "contact.heading1": "Let's talk",
+          "contact.heading2": "about your project",
+          "contact.sub":
+            "I'm available for junior backend positions, freelance projects, or collaborations. Feel free to reach out.",
+          "contact.btn": "Send a message",
+        },
+      };
+
+      let currentLang = "es";
+
+      function applyLang(lang) {
+        document.querySelectorAll("[data-i18n]").forEach((el) => {
+          const key = el.getAttribute("data-i18n");
+          if (i18n[lang][key] !== undefined) {
+            el.innerHTML = i18n[lang][key];
+          }
+        });
+        document.documentElement.lang = lang;
+        document.getElementById("langToggle").textContent =
+          lang === "es" ? "EN" : "ES";
+        document.getElementById("langToggleMobile").textContent =
+          lang === "es" ? "EN" : "ES";
+      }
+
+      function toggleLang() {
+        currentLang = currentLang === "es" ? "en" : "es";
+        applyLang(currentLang);
+      }
+
+      document
+        .getElementById("langToggle")
+        .addEventListener("click", toggleLang);
+      document
+        .getElementById("langToggleMobile")
+        .addEventListener("click", toggleLang);
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry, i) => {
+            if (entry.isIntersecting) {
+              setTimeout(() => entry.target.classList.add("visible"), i * 80);
+            }
+          });
+        },
+        { threshold: 0.1 },
+      );
+
+      document
+        .querySelectorAll(".reveal")
+        .forEach((el) => observer.observe(el));
+
+      const mobileToggle = document.getElementById("langToggleMobile");
+      if (window.innerWidth <= 768) {
+        mobileToggle.style.display = "block";
+      }
+      window.addEventListener("resize", () => {
+        mobileToggle.style.display =
+          window.innerWidth <= 768 ? "block" : "none";
+      });
+    </script>
+  </body>
+</html>
