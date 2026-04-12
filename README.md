@@ -2,7 +2,7 @@
 
 Portfolio personal de Adrian Yesid Restrepo Lopez, Desarrollador Backend con enfoque en Node.js, Express, MySQL e integración de IA mediante metodología SDD.
 
-🔗 **[Ver en vivo](https://adrian-restrepo.vercel.app)**
+🔗 **[Ver en vivo](https://portfolio-adrian-restrepo.vercel.app)**
 
 ---
 
